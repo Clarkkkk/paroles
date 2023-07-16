@@ -23,6 +23,7 @@ export interface LyricsLine {
 }
 
 export class Lyrics {
+    private _offset: number
     public eol: EndOfLine
     public info: LyricsInfo
     public lines: LyricsLine[]
@@ -33,11 +34,13 @@ export class Lyrics {
             const obj = Lyrics.parse(lyrics, this.eol)
             this.info = obj.info
             this.lines = obj.lines
+            this._offset = obj.info.offset || 0
         } else {
             const cloned = lyrics.clone()
             this.eol = cloned.eol
             this.info = cloned.info
             this.lines = cloned.lines
+            this._offset = cloned.info.offset || 0
         }
     }
 
@@ -54,16 +57,17 @@ export class Lyrics {
     }
 
     getIndexByTime(time: number) {
-        return this.lines.findIndex((item) => item.time > time)
+        const index = this.lines.findIndex((item) => item.time - this._offset > time)
+        return index <= 0 ? index : index - 1
     }
 
     atTime(time: number) {
         const index = this.getIndexByTime(time)
-        if (index <= 0) {
-            return this.lines.at(index)
-        } else {
-            return this.lines.at(index - 1)
-        }
+        return this.lines.at(index)
+    }
+
+    setOffset(sec: number) {
+        this._offset = sec
     }
 
     static stringify(lyrics: Lyrics) {
@@ -116,7 +120,7 @@ export class Lyrics {
                 matches.forEach((match) => {
                     const min = +match[1]
                     const sec = +(match[2] + '.' + match[3])
-                    const time = min * 60 * 1000 + sec * 1000
+                    const time = min * 60 + sec
                     lyricLines.push({
                         time,
                         text
@@ -131,7 +135,7 @@ export class Lyrics {
                         lyricInfo[metaType] = metaText || ''
                     } else {
                         const offset = +metaText
-                        lyricInfo[metaType] = isNaN(offset) ? 0 : offset
+                        lyricInfo[metaType] = isNaN(offset) ? 0 : +(offset / 1000).toFixed(2)
                     }
                 }
             }
@@ -199,5 +203,7 @@ function getMetaTypeAbbr(t: string): string {
 }
 
 function formatTime(t: number): string {
-    return `${prependZero(Math.floor(t / 60), 2)}:${prependZero((t % 60).toFixed(2), 2)}`
+    const min = prependZero(Math.floor(t / 60), 2)
+    const sec = prependZero((t % 60).toFixed(2), 2)
+    return `${min}:${sec}`
 }

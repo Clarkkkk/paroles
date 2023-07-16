@@ -41,7 +41,7 @@ export class LyricsPlayer {
         if (e === 'update') {
             const callback = () => {
                 const index = this.getCurrentIndex()
-                const currentLine = this.lyrics.lines.at(index <= 0 ? index : index - 1)
+                const currentLine = this.lyrics.lines.at(index)
                 handler(currentLine?.text || '', index)
             }
             this._subscribtions.push(callback)
