@@ -1,4 +1,4 @@
-# lyrics-kit
+# lyrics-player
 
 [![NPM version][npm-image]][npm-url] [![NPM Downloads][npm-download]][npm-url] [![License][license]][license-url] [![Minified Size][minified-size]][npm-url] [![Build Status][build-status]][github-actions]
 
@@ -7,17 +7,17 @@ A simple LRC format lyrics parser and runner
 ## Install
 
 ```sh
-npm i lyrics-kit
+npm i lyrics-player
 ```
 
 Or
 
 ```sh
-pnpm add lyrics-kit
+pnpm add lyrics-player
 ```
 
 ```sh
-yarn add lyrics-kit
+yarn add lyrics-player
 ```
 
 ## Usage
@@ -74,11 +74,11 @@ If you found it useful somehow, I would be grateful if you could leave a star in
 
 Thank you.
 
-[npm-url]: https://www.npmjs.com/package/lyrics-kit
-[npm-image]: https://badge.fury.io/js/lyrics-kit.svg
-[npm-download]: https://img.shields.io/npm/dw/lyrics-kit
-[license]: https://img.shields.io/github/license/Clarkkkk/lyrics-kit
-[license-url]: https://github.com/Clarkkkk/lyrics-kit/blob/main/LICENSE.md
-[minified-size]: https://img.shields.io/bundlephobia/min/lyrics-kit
-[build-status]: https://img.shields.io/github/actions/workflow/status/Clarkkkk/lyrics-kit/.github%2Fworkflows%2Fpublish.yml
-[github-actions]: https://github.com/Clarkkkk/lyrics-kit/actions
+[npm-url]: https://www.npmjs.com/package/lyrics-player
+[npm-image]: https://badge.fury.io/js/lyrics-player.svg
+[npm-download]: https://img.shields.io/npm/dw/lyrics-player
+[license]: https://img.shields.io/github/license/Clarkkkk/lyrics-player
+[license-url]: https://github.com/Clarkkkk/lyrics-player/blob/main/LICENSE.md
+[minified-size]: https://img.shields.io/bundlephobia/min/lyrics-player
+[build-status]: https://img.shields.io/github/actions/workflow/status/Clarkkkk/lyrics-player/.github%2Fworkflows%2Fpublish.yml
+[github-actions]: https://github.com/Clarkkkk/lyrics-player/actions
