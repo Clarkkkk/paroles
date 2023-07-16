@@ -7,7 +7,7 @@
   "packageManager": "pnpm@8.6.3",
   "keywords": [
     "lyrics",
-    "lyrics kit",
+    "lyrics player",
     "lrc",
     "lrc parser",
     "lyrics parser"
@@ -39,6 +39,8 @@
     "dev": "vite --host",
     "build": "tsc && vite build",
     "test": "vitest",
+    "test:update": "vitest --update",
+    "test:run": "vitest --run --changed",
     "test:coverage": "vitest --coverage",
     "typecheck": "tsc --noEmit --watch --preserveWatchOutput",
     "format": "eslint --fix --cache src/**/*.{vue,ts}",

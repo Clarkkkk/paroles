@@ -6,14 +6,23 @@ const timeListReg = /\[(\d+):(\d+)(?:.(\d+))?\]/g
 const metaReg = /\[([a-z]+):([^\]]*)\]/
 
 interface LyricsInfo {
+    /** al, Album where the song is from */
     album?: string
+    /** ar, Lyrics artist */
     artist?: string
+    /** au, Creator of the Songtext */
     author?: string
+    /** ti, Lyrics (song) title */
     title?: string
+    /** by, Creator of the LRC file */
     creator?: string
+    /** +/- Overall timestamp adjustment in seconds, + shifts time up, - shifts down i.e. A positive value let lyrics appear sooner, a negative value delays the lyrics */
     offset?: number
+    /** How long the song is */
     length?: string
+    /** re, The player or editor that created the LRC file */
     editor?: string
+    /** ve, version of program */
     version?: string
 }
 
