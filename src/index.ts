@@ -1,3 +1,2 @@
-import './style.css'
-
-export { sum } from './sum'
+export * from './lyrics'
+export * from './player'
