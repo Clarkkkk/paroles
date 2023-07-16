@@ -2,7 +2,7 @@ import type { Lyrics } from './lyrics'
 
 type LyricsPlayerEvent = 'update'
 type LyricsPlayerEventHandler<T extends LyricsPlayerEvent> = T extends 'update'
-    ? (currentLine: string) => void
+    ? (currentLine: string, index: number) => void
     : () => void
 
 export class LyricsPlayer {
@@ -30,12 +30,20 @@ export class LyricsPlayer {
         return this.lyrics.atTime(this.currentTime)?.text || ''
     }
 
+    getCurrentIndex() {
+        return this.lyrics.getIndexByTime(this.currentTime)
+    }
+
     on<T extends LyricsPlayerEvent = LyricsPlayerEvent>(
         e: T,
         handler: LyricsPlayerEventHandler<T>
     ) {
         if (e === 'update') {
-            const callback = () => handler(this.getCurrentLine())
+            const callback = () => {
+                const index = this.getCurrentIndex()
+                const currentLine = this.lyrics.lines.at(index <= 0 ? index : index - 1)
+                handler(currentLine?.text || '', index)
+            }
             this._subscribtions.push(callback)
         }
     }

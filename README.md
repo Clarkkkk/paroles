@@ -66,7 +66,7 @@ audio.addEventListener('timeupdate', (e) => {
 - `updateTime(time: number)`: update the current play time, should be synchronized with the song play time
 - `getCurrentLine()`: get the current lyrics line based on the current play time
 - `on(event, callback)`: subscribe the event and the callback will be called when event triggers. 
-    - `update` event: triggered when current lyrics line changes. Current lyrics line is available in callback `callback(currentLine: text)`
+    - `update` event: triggered when current lyrics line changes. Current lyrics line and index is available in callback `callback(currentLine: text, index: number)`
 
 ## Acknowledgment
 

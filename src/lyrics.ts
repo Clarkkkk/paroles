@@ -53,12 +53,14 @@ export class Lyrics {
         return this.lines.at(index)
     }
 
+    getIndexByTime(time: number) {
+        return this.lines.findIndex((item) => item.time > time)
+    }
+
     atTime(time: number) {
-        const index = this.lines.findIndex((item) => item.time > time)
-        if (index === -1) {
-            return this.lines.at(-1)
-        } else if (index === 0) {
-            return this.lines.at(0)
+        const index = this.getIndexByTime(time)
+        if (index <= 0) {
+            return this.lines.at(index)
         } else {
             return this.lines.at(index - 1)
         }
