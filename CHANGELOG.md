@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+# 1.0.0 (2023-07-16)
+
+
+### Features
+
+* Lyrics and LyricsPlayer ([60b4f78](https://github.com/Clarkkkk/lyrics-kit/commit/60b4f780faaa4acf90c7c6af3836ef12d60af7b3))
+
+
+
 # 0.2.0 (2023-07-12)
 
 
