@@ -1,61 +1,84 @@
-# vite-vanilla-ts-lib-starter
+# lyrics-kit
 
-The starter is built on top of Vite 4.x and prepared for writing libraries in TypeScript. It generates a hybrid package - both support for CommonJS and ESM modules.
+[![NPM version][npm-image]][npm-url] [![NPM Downloads][npm-download]][npm-url] [![License][license]][license-url] [![Minified Size][minified-size]][npm-url] [![Build Status][build-status]][github-actions]
 
-## Features
+A simple LRC format lyrics parser and runner
 
-- Hybrid support - CommonJS and ESM modules
-- IIFE bundle for direct browser support without bundler
-- Typings bundle
-- ESLint - scripts linter
-- Stylelint - styles linter
-- Prettier - formatter
-- Vitest - test framework
-- Husky + lint-staged - pre-commit git hook set up for formatting
+## Install
 
-## GitHub Template
-
-This is a template repo. Click the green [Use this template](https://github.com/kbysiec/vite-vanilla-ts-lib-starter/generate) button to get started.
-
-## Clone to local
-
-If you prefer to do it manually with the cleaner git history
-
-```bash
-git clone https://github.com/kbysiec/vite-vanilla-ts-lib-starter.git
-cd vite-vanilla-ts-lib-starter
-npm i
+```sh
+npm i lyrics-kit
 ```
 
-## Checklist
+Or
 
-When you use this template, update the following:
+```sh
+pnpm add lyrics-kit
+```
 
-- Remove `.git` directory and run `git init` to clean up the history
-- Change the name in `package.json` - it will be the name of the IIFE bundle global variable and bundle files name (`.cjs`, `.mjs`, `.iife.js`, `d.ts`)
-- Change the author name in `LICENSE`
-- Clean up the `README` and `CHANGELOG` files
-
-And, enjoy :)
+```sh
+yarn add lyrics-kit
+```
 
 ## Usage
 
-The starter contains the following scripts:
+### Parse lyrics
 
-- `dev` - starts dev server
-- `build` - generates the following bundles: CommonJS (`.cjs`) ESM (`.mjs`) and IIFE (`.iife.js`). The name of bundle is automatically taken from `package.json` name property
-- `test` - starts vitest and runs all tests
-- `test:coverage` - starts vitest and run all tests with code coverage report
-- `lint:scripts` - lint `.ts` files with eslint
-- `lint:styles` - lint `.css` and `.scss` files with stylelint
-- `format:scripts` - format `.ts`, `.html` and `.json` files with prettier
-- `format:styles` - format `.cs` and `.scss` files with stylelint
-- `format` - format all with prettier and stylelint
-- `prepare` - script for setting up husky pre-commit hook
-- `uninstall-husky` - script for removing husky from repository
+```js
+const text = `
+  [ti:Title]
+  [ar:Lyrics artist]
+  [00:25.32]There comes a time
+  [00:28.57]When we hear a certain call
+`
+const lyrics = new Lyrics(text)
+
+console.log(lyrics.info.title) // Title
+console.log(lyrics.lines[0]) // There comes a time
+console.log(lyrics.atTime(26)) // There comes a time
+```
+
+### Play lyrics
+
+```js
+const lyricsPlayer = new LyricsPlayer(lyrics)
+lyricsPlayer.on('update', (line) => {
+    console.log(line) // There comes a time
+})
+
+const audio = ducument.querySelector('audio')
+audio.addEventListener('timeupdate', (e) => {
+    lyricsPlayer.updateTime(e.target.currentTime)
+})
+```
+
+## API
+
+### `Lyrics`
+
+- `clone()`: clone and return a new `Lyrics` object
+- `toString()`: return the raw text of the `Lyrics` object
+- `at(index: number)`: return the lyrics line at the index
+- `atTime(time: number)`: return the lyrics line based on the time (milliseconds)
+
+### `LyricsPlayer`
+
+- `updateTime(time: number)`: update the current play time, should be synchronized with the song play time
+- `getCurrentLine()`: get the current lyrics line based on the current play time
+- `on(event, callback)`: subscribe the event and the callback will be called when event triggers. 
+    - `update` event: triggered when current lyrics line changes. Current lyrics line is available in callback `callback(currentLine: text)`
 
 ## Acknowledgment
 
 If you found it useful somehow, I would be grateful if you could leave a star in the project's GitHub repository.
 
 Thank you.
+
+[npm-url]: https://www.npmjs.com/package/lyrics-kit
+[npm-image]: https://badge.fury.io/js/lyrics-kit.svg
+[npm-download]: https://img.shields.io/npm/dw/lyrics-kit
+[license]: https://img.shields.io/github/license/Clarkkkk/lyrics-kit
+[license-url]: https://github.com/Clarkkkk/lyrics-kit/blob/main/LICENSE.md
+[minified-size]: https://img.shields.io/bundlephobia/min/lyrics-kit
+[build-status]: https://img.shields.io/github/actions/workflow/status/Clarkkkk/lyrics-kit/.github%2Fworkflows%2Fpublish.yml
+[github-actions]: https://github.com/Clarkkkk/lyrics-kit/actions
