@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.1](https://github.com/Clarkkkk/lyrics-kit/compare/v1.0.0...v1.0.1) (2023-07-16)
+
+
+### Bug Fixes
+
+* remove `private` in package.json ([e666b6b](https://github.com/Clarkkkk/lyrics-kit/commit/e666b6bbcf75aa9b0944ef77f2b83c2cae584be3))
+
+
+
 # 1.0.0 (2023-07-16)
 
 

@@ -1,7 +1,7 @@
 {
   "name": "lyrics-kit",
   "description": "Easy to use lyrics parser and runner",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "license": "MIT",
   "author": "Aaron Zhou",
   "packageManager": "pnpm@8.6.3",
