@@ -2,6 +2,15 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.2](https://github.com/Clarkkkk/lyrics-player/compare/v1.0.1...v1.0.2) (2023-07-16)
+
+
+### Bug Fixes
+
+* rename the package ([0723908](https://github.com/Clarkkkk/lyrics-player/commit/072390837bc6a6162943cac9b273f7f22d4fbb60))
+
+
+
 ## [1.0.1](https://github.com/Clarkkkk/lyrics-player/compare/v1.0.0...v1.0.1) (2023-07-16)
 
 
