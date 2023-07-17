@@ -31,17 +31,21 @@ const example = `
 describe('Lyrics', () => {
     const lyrics = new Lyrics(example)
 
-    test('update triggered', () => {
+    test('update and event', () => {
         const player = new LyricsPlayer(lyrics)
         const callback = vi.fn((line, index) => {
             return { line, index }
         })
-        player.on('update', callback)
+        player.on('linechange', callback)
 
         player.updateTime(0)
         expect(callback).toHaveBeenNthCalledWith(1, 'There comes a time', 0)
 
         player.updateTime(29)
         expect(callback).toHaveBeenNthCalledWith(2, 'When we hear a certain call', 1)
+
+        player.off('linechange', callback)
+        player.updateTime(30)
+        expect(callback).toHaveBeenCalledTimes(2)
     })
 })
