@@ -2,6 +2,21 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+# [2.0.0](https://github.com/Clarkkkk/lyrics-player/compare/v1.1.0...v2.0.0) (2023-07-17)
+
+
+### Features
+
+* add `rewind` and `off` for LyricsPlayer ([4f80b56](https://github.com/Clarkkkk/lyrics-player/commit/4f80b568abd5f2033131d836d03e5529b7c41821))
+
+
+### BREAKING CHANGES
+
+- LyricsPlayer: rename `update` event to `linechange`
+- LyricsPlayer: remove `reset` method. Use `off()` instead
+
+
+
 # [1.1.0](https://github.com/Clarkkkk/lyrics-player/compare/v1.0.2...v1.1.0) (2023-07-16)
 
 
