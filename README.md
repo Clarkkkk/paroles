@@ -96,14 +96,25 @@ audio.addEventListener('timeupdate', (e) => {
 
 ### `LyricsPlayer`
 
+- `currentTime`: current play time (in seconds).
+- `lyrics`: the Lyrics object
 - `updateTime(time: number)`: update the current play time (in seconds), should be synchronized with the song play time
 - `getCurrentLine()`: get the current lyrics line based on the current play time
+- `getCurrentIndex()`: get the current lyrics line index based on the current play time
+- `rewind(lyrics?)`: reset `currentTime`. If lyrics is provided, `linechange` will be triggered with the new lyrics.
 - `on(event, callback)`: subscribe the event and the callback will be called when event triggers. 
-    - `update` event: triggered when current lyrics line changes. Current lyrics line and index is available in callback `callback(currentLine: text, index: number)`
+    - `linechange` event: triggered when current lyrics line changes. Current lyrics line and index is available in callback `callback(currentLine: text, index: number)`
+    - `lyricschange` event: triggered when `rewind(lyrics)` called and lyrics changes.
+- `off(event?, callback?)`: remove the event listener. If `callback` is omited, all listeners belong to that event will be removed. If `event` and `callback` are both omited, all of the event listeners will be removed.
+
+## Migrate from v1
+
+- rename `update` event to `linechange` in `LyricsPlayer`
+- `LyricsPlayer.reset()` is removed. Use `LyricsPlayer.rewind()` and `LyricsPlayer.off()` together instead
 
 ## LRC format
 
-There is no definite and strict specification for LRC format. Therefore, descriptions on (WikiPedia)[https://en.wikipedia.org/wiki/LRC_(file_format)] are used to confine the behaviour in `lyrics-player`.
+There is no definite and strict specification for LRC format. Therefore, [descriptions on WikiPedia](https://en.wikipedia.org/wiki/LRC_(file_format)) are used to confine the behaviour in `lyrics-player`.
 
 ## Credit
 This library is inspired by:
