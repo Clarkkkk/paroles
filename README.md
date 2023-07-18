@@ -2,7 +2,7 @@
 
 [![NPM version][npm-image]][npm-url] [![NPM Downloads][npm-download]][npm-url] [![License][license]][license-url] [![Minified Size][minified-size]][npm-url] [![Build Status][build-status]][github-actions]
 
-A simple LRC format lyrics parser and runner
+`paroles` is a library for parsing, making, modifying and "playing" LRC format lyrics
 
 - support typescript
 - support ES module and commonjs
@@ -43,14 +43,44 @@ console.log(lyrics.lines[0]) // There comes a time
 console.log(lyrics.atTime(26)) // There comes a time
 ```
 
+### Make lyrics
+```js
+const lyrics = new Lyrics()
+lyrics.insert({ time: 25.32, text: 'There comes a time' })
+const piece = new Lyrics(`
+[00:28.57]When we hear a certain call
+[00:31.82]When the world must come together as onee
+[00:38.82]advertisement
+`)
+lyrics.merge(piece)
+lyrics.remove('advertisement')
+lyrics.replace('When the world must come together as onee', 'When the world must come together as one')
+lyrics.setInfo({
+    artist: 'USA for africa',
+    length: '07:00.19',
+    title: 'We are the world',
+    version: 'v1.0.0',
+})
+console.log(lyrics.toString())
+// [ar:USA for africa]
+// [ti:We are the world]
+// [length:07:00.19]
+// [ve:v1.0.0]
+// [00:25.32]There comes a time
+// [00:28.57]When we hear a certain call
+// [00:31.82]When the world must come together as one
+```
+
 ### Play lyrics
 
 ```js
 const lyricsPlayer = new LyricsPlayer(lyrics)
-lyricsPlayer.on('update', (line) => {
+// subscribe linechange event
+lyricsPlayer.on('linechange', (line) => {
     console.log(line) // There comes a time
 })
 
+// update play time with audio element
 const audio = ducument.querySelector('audio')
 audio.addEventListener('timeupdate', (e) => {
     lyricsPlayer.updateTime(e.target.currentTime)
@@ -93,6 +123,14 @@ audio.addEventListener('timeupdate', (e) => {
 - `at(index: number)`: return the lyrics line at the index
 - `atTime(time: number)`: return the lyrics line based on the time (in seconds)
 - `setOffset(time: number)`: set time offset (in seconds). A positive value let lyrics appear sooner, a negative value delays the lyrics
+- `setInfo(info: LyricsInfo)`: set `LyricsInfo`. New properties will override the original ones
+- `merge(lyrics: string | Lyrics, option?)`: merge another lyrics. The original lyrics is prior by default if there are conflicts.
+    - `option.override`: if `true`, lyrics to merge is prior to, and will overwrite the original one for `LyricsInfo` and lines with the same time.
+    - `option.resolveInfo(originalInfo, affiliateInfo)`: manually control how to merge `LyricsInfo`, should return a `LyricsInfo` object. `option.override` for `LyricsInfo` is neglected when use this option.
+    - `resolveConflict(originalLine, affiliateLine)`: manually control how to merge two lines with the same time. `option.override` for lyrics lines is neglected when use this option.
+- `insert(line: LyricsLine)`: insert a new line. If there is a line with the same time, the inserted line will replace the original one.
+- `remove(line: LyricsLine | string)`: remove a line. If no such line, it fails in silent.
+- `replace(oldLine: LyricsLine | string, newLine: LyricsLine | string)`: replace a line. If no such line, it fails in silent.
 
 ### `LyricsPlayer`
 
