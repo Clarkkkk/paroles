@@ -1,4 +1,4 @@
-# lyrics-player
+# paroles
 
 [![NPM version][npm-image]][npm-url] [![NPM Downloads][npm-download]][npm-url] [![License][license]][license-url] [![Minified Size][minified-size]][npm-url] [![Build Status][build-status]][github-actions]
 
@@ -12,17 +12,17 @@ A simple LRC format lyrics parser and runner
 ## Install
 
 ```sh
-npm i lyrics-player
+npm i paroles
 ```
 
 Or
 
 ```sh
-pnpm add lyrics-player
+pnpm add paroles
 ```
 
 ```sh
-yarn add lyrics-player
+yarn add paroles
 ```
 
 ## Usage
@@ -109,12 +109,13 @@ audio.addEventListener('timeupdate', (e) => {
 
 ## Migrate from v1
 
+- the package is renamed to `paroles`. Uninstall `lyrics-player` and install `paroles`
 - rename `update` event to `linechange` in `LyricsPlayer`
 - `LyricsPlayer.reset()` is removed. Use `LyricsPlayer.rewind()` and `LyricsPlayer.off()` together instead
 
 ## LRC format
 
-There is no definite and strict specification for LRC format. Therefore, [descriptions on WikiPedia](https://en.wikipedia.org/wiki/LRC_(file_format)) are used to confine the behaviour in `lyrics-player`.
+There is no definite and strict specification for LRC format. Therefore, [descriptions on WikiPedia](https://en.wikipedia.org/wiki/LRC_(file_format)) are used to confine the behaviour in `paroles`.
 
 ## Credit
 This library is inspired by:
@@ -127,11 +128,11 @@ If you found it useful somehow, I would be grateful if you could leave a star in
 
 Thank you.
 
-[npm-url]: https://www.npmjs.com/package/lyrics-player
-[npm-image]: https://badge.fury.io/js/lyrics-player.svg
-[npm-download]: https://img.shields.io/npm/dw/lyrics-player
-[license]: https://img.shields.io/github/license/Clarkkkk/lyrics-player
-[license-url]: https://github.com/Clarkkkk/lyrics-player/blob/main/LICENSE.md
-[minified-size]: https://img.shields.io/bundlephobia/min/lyrics-player
-[build-status]: https://img.shields.io/github/actions/workflow/status/Clarkkkk/lyrics-player/.github%2Fworkflows%2Fpublish.yml
-[github-actions]: https://github.com/Clarkkkk/lyrics-player/actions
+[npm-url]: https://www.npmjs.com/package/paroles
+[npm-image]: https://badge.fury.io/js/paroles.svg
+[npm-download]: https://img.shields.io/npm/dw/paroles
+[license]: https://img.shields.io/github/license/Clarkkkk/paroles
+[license-url]: https://github.com/Clarkkkk/paroles/blob/main/LICENSE.md
+[minified-size]: https://img.shields.io/bundlephobia/min/paroles
+[build-status]: https://img.shields.io/github/actions/workflow/status/Clarkkkk/paroles/.github%2Fworkflows%2Fpublish.yml
+[github-actions]: https://github.com/Clarkkkk/paroles/actions

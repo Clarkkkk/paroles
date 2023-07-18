@@ -1,5 +1,5 @@
 {
-  "name": "lyrics-player",
+  "name": "paroles",
   "description": "Easy to use lyrics parser and runner",
   "version": "2.0.0",
   "license": "MIT",
@@ -12,16 +12,16 @@
     "lrc parser",
     "lyrics parser"
   ],
-  "homepage": "https://github.com/Clarkkkk/lyrics-player#readme",
+  "homepage": "https://github.com/Clarkkkk/paroles#readme",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Clarkkkk/lyrics-player"
+    "url": "git+https://github.com/Clarkkkk/paroles"
   },
   "bugs": {
-    "url": "https://github.com/Clarkkkk/lyrics-player/issues"
+    "url": "https://github.com/Clarkkkk/paroles/issues"
   },
-  "main": "./dist/lyrics-player.cjs",
-  "module": "./dist/lyrics-player.mjs",
+  "main": "./dist/paroles.cjs",
+  "module": "./dist/paroles.mjs",
   "types": "./dist/index.d.ts",
   "type": "module",
   "files": [
@@ -31,8 +31,8 @@
   "exports": {
     ".": {
       "types": "./dist/index.d.ts",
-      "require": "./dist/lyrics-player.cjs",
-      "import": "./dist/lyrics-player.mjs"
+      "require": "./dist/paroles.cjs",
+      "import": "./dist/paroles.mjs"
     }
   },
   "scripts": {
