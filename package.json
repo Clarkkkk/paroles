@@ -1,7 +1,7 @@
 {
   "name": "paroles",
   "description": "Easy to use lyrics parser and runner",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "license": "MIT",
   "author": "Aaron Zhou",
   "packageManager": "pnpm@8.6.3",
