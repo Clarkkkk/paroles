@@ -31,19 +31,30 @@ export interface LyricsLine {
     text: string
 }
 
+interface LyricsMergeOption {
+    override?: boolean
+    resolveInfo?: (original: LyricsInfo, affiliate: LyricsInfo) => LyricsInfo
+    resolveConflict?: (original: string, affiliate: string) => string
+}
+
 export class Lyrics {
     private _offset: number
     public eol: EndOfLine
     public info: LyricsInfo
     public lines: LyricsLine[]
 
-    constructor(lyrics: string | Lyrics) {
+    constructor(lyrics?: string | Lyrics) {
         if (typeof lyrics === 'string') {
             this.eol = detectEol(lyrics)
             const obj = Lyrics.parse(lyrics, this.eol)
             this.info = obj.info
             this.lines = obj.lines
             this._offset = obj.info.offset || 0
+        } else if (typeof lyrics === 'undefined') {
+            this.eol = LF
+            this.info = {}
+            this.lines = []
+            this._offset = 0
         } else {
             const cloned = lyrics.clone()
             this.eol = cloned.eol
@@ -77,6 +88,115 @@ export class Lyrics {
 
     setOffset(sec: number) {
         this._offset = sec
+    }
+
+    merge(lyrics: string | Lyrics, options?: LyricsMergeOption) {
+        const affiliate = new Lyrics(lyrics)
+        if (options?.resolveInfo) {
+            this.info = options.resolveInfo(this.info, affiliate.info)
+        } else if (options?.override) {
+            this.info = {
+                ...this.info,
+                ...affiliate.info
+            }
+        } else {
+            this.info = {
+                ...affiliate.info,
+                ...this.info
+            }
+        }
+
+        for (const line of affiliate.lines) {
+            let previousIndex = this.getIndexByTime(line.time)
+            previousIndex = previousIndex === -1 ? this.lines.length - 1 : previousIndex
+            if (this.lines[previousIndex].time === line.time) {
+                if (options?.resolveConflict) {
+                    this.lines[previousIndex] = {
+                        time: line.time,
+                        text: options.resolveConflict(this.lines[previousIndex].text, line.text)
+                    }
+                } else if (options?.override) {
+                    this.lines[previousIndex] = {
+                        time: line.time,
+                        text: line.text
+                    }
+                } else {
+                    continue
+                }
+            } else if (previousIndex === this.lines.length - 1) {
+                this.lines.push(line)
+            } else if (previousIndex === 0 && line.time < this.lines[previousIndex].time) {
+                this.lines.unshift(line)
+            } else {
+                this.lines.splice(previousIndex + 1, 0, line)
+            }
+        }
+
+        return this
+    }
+
+    insert(line: LyricsLine) {
+        let index = this.getIndexByTime(line.time)
+        index = index === -1 ? this.lines.length - 1 : index
+        if (this.lines[index].time === line.time) {
+            this.lines[index] = line
+        } else if (index === this.lines.length - 1) {
+            this.lines.push(line)
+        } else if (index === 0 && line.time < this.lines[index].time) {
+            this.lines.unshift(line)
+        } else {
+            this.lines.splice(index + 1, 0, line)
+        }
+
+        return this
+    }
+
+    remove(line: LyricsLine | string) {
+        if (typeof line === 'string') {
+            const index = this.lines.findIndex((l) => l.text === line)
+            if (index > -1) {
+                this.lines.splice(index, 1)
+            } else {
+                console.error('lyrics line not existed')
+            }
+        } else {
+            let index = this.getIndexByTime(line.time)
+            index = index === -1 ? this.lines.length - 1 : index
+            if (this.lines[index].time === line.time && this.lines[index].text === line.text) {
+                this.lines.splice(index, 1)
+            } else {
+                console.error('lyrics line not existed')
+            }
+        }
+
+        return this
+    }
+
+    replace(oldLine: LyricsLine, newLine: LyricsLine): Lyrics
+    replace(oldLine: string, newLine: string): Lyrics
+    replace(oldLine: LyricsLine | string, newLine: LyricsLine | string) {
+        if (typeof oldLine === 'string' && typeof newLine === 'string') {
+            const item = this.lines.find((l) => l.text === oldLine)
+            if (item) {
+                item.text = newLine
+            }
+        } else if (typeof oldLine !== 'string' && typeof newLine !== 'string') {
+            const index = this.lines.findIndex((l) => {
+                return l.text === oldLine.text && l.time === oldLine.time
+            })
+            if (index > -1) {
+                this.lines[index] = newLine
+            }
+        }
+
+        return this
+    }
+
+    setInfo(info: LyricsInfo) {
+        this.info = {
+            ...this.info,
+            ...info
+        }
     }
 
     static stringify(lyrics: Lyrics) {
@@ -151,6 +271,13 @@ export class Lyrics {
         }
 
         lyricLines.sort(function (a, b) {
+            if (a.time === b.time) {
+                throw new Error(
+                    `Found two lines with the same time: "${a.text}" and "${
+                        b.text
+                    }" at ${formatTime(a.time)}`
+                )
+            }
             return a.time - b.time
         })
 
