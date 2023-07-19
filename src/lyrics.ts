@@ -135,30 +135,34 @@ export class Lyrics {
         return this
     }
 
-    insert(line: LyricsLine) {
-        let index = this.getIndexByTime(line.time)
-        index = index === -1 ? this.lines.length - 1 : index
-        if (this.lines[index].time === line.time) {
-            this.lines[index] = line
-        } else if (index === this.lines.length - 1) {
-            this.lines.push(line)
-        } else if (index === 0 && line.time < this.lines[index].time) {
-            this.lines.unshift(line)
-        } else {
-            this.lines.splice(index + 1, 0, line)
+    insert(lines: LyricsLine | LyricsLine[]) {
+        const arr = Array.isArray(lines) ? lines : [lines]
+        for (const line of arr) {
+            let index = this.getIndexByTime(line.time)
+            index = index === -1 ? this.lines.length - 1 : index
+            if (this.lines[index].time === line.time) {
+                this.lines[index] = line
+            } else if (index === this.lines.length - 1) {
+                this.lines.push(line)
+            } else if (index === 0 && line.time < this.lines[index].time) {
+                this.lines.unshift(line)
+            } else {
+                this.lines.splice(index + 1, 0, line)
+            }
         }
 
         return this
     }
 
-    remove(line: LyricsLine | string) {
+    remove(line: LyricsLine | string | RegExp) {
         if (typeof line === 'string') {
-            const index = this.lines.findIndex((l) => l.text === line)
-            if (index > -1) {
-                this.lines.splice(index, 1)
-            } else {
-                console.error('lyrics line not existed')
-            }
+            this.lines = this.lines.filter((item) => {
+                return item.text !== line
+            })
+        } else if (line instanceof RegExp) {
+            this.lines = this.lines.filter((item) => {
+                return !line.test(item.text)
+            })
         } else {
             let index = this.getIndexByTime(line.time)
             index = index === -1 ? this.lines.length - 1 : index
@@ -174,19 +178,39 @@ export class Lyrics {
 
     replace(oldLine: LyricsLine, newLine: LyricsLine): Lyrics
     replace(oldLine: string, newLine: string): Lyrics
-    replace(oldLine: LyricsLine | string, newLine: LyricsLine | string) {
-        if (typeof oldLine === 'string' && typeof newLine === 'string') {
-            const item = this.lines.find((l) => l.text === oldLine)
-            if (item) {
-                item.text = newLine
-            }
-        } else if (typeof oldLine !== 'string' && typeof newLine !== 'string') {
-            const index = this.lines.findIndex((l) => {
-                return l.text === oldLine.text && l.time === oldLine.time
+    replace(oldLine: RegExp, newLine: LyricsLine): Lyrics
+    replace(oldLine: RegExp, newLine: string): Lyrics
+    replace(oldLine: LyricsLine | string | RegExp, newLine: LyricsLine | string) {
+        if (
+            (typeof oldLine === 'string' || oldLine instanceof RegExp) &&
+            typeof newLine === 'string'
+        ) {
+            const items = this.lines.filter((l) => {
+                if (typeof oldLine === 'string') {
+                    return l.text === oldLine
+                } else {
+                    return oldLine.test(l.text)
+                }
             })
-            if (index > -1) {
-                this.lines[index] = newLine
+            if (items.length) {
+                items.forEach((item) => {
+                    if (typeof oldLine === 'string') {
+                        item.text = newLine
+                    } else {
+                        item.text = item.text.replace(oldLine, newLine)
+                    }
+                })
             }
+        } else if (isLyricsLine(oldLine) && isLyricsLine(newLine)) {
+            const indices: number[] = []
+            this.lines.forEach((item, index) => {
+                if (item.text === oldLine.text && item.time === oldLine.time) {
+                    indices.push(index)
+                }
+            })
+            indices.forEach((index) => {
+                this.lines[index] = newLine
+            })
         }
 
         return this
@@ -197,6 +221,8 @@ export class Lyrics {
             ...this.info,
             ...info
         }
+
+        return this
     }
 
     static stringify(lyrics: Lyrics) {
@@ -342,4 +368,8 @@ function formatTime(t: number): string {
     const min = prependZero(Math.floor(t / 60), 2)
     const sec = prependZero((t % 60).toFixed(2), 2)
     return `${min}:${sec}`
+}
+
+function isLyricsLine(line: unknown): line is LyricsLine {
+    return !!line && typeof line === 'object' && 'text' in line && 'time' in line
 }

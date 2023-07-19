@@ -311,6 +311,35 @@ describe('Lyrics operations', () => {
         `)
     })
 
+    test('insert multiple lines', () => {
+        const lyrics = new Lyrics(example)
+        expect(
+            lyrics.insert([
+                { time: 30, text: 'End' },
+                { time: 2, text: 'Music' }
+            ]).lines
+        ).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "Music",
+              "time": 2,
+            },
+            {
+              "text": "There comes a time",
+              "time": 25.32,
+            },
+            {
+              "text": "When we hear a certain call",
+              "time": 28.57,
+            },
+            {
+              "text": "End",
+              "time": 30,
+            },
+          ]
+        `)
+    })
+
     test('remove', () => {
         const lyrics = new Lyrics(example)
         expect(lyrics.remove('There comes a time').lines).toMatchInlineSnapshot(`
@@ -329,6 +358,42 @@ describe('Lyrics operations', () => {
             {
               "text": "There comes a time",
               "time": 25.32,
+            },
+          ]
+        `)
+    })
+
+    test('remove multiple lines', () => {
+        const multilineExample = `
+[00:25.32]There comes a time
+[00:28.57]When we hear a certain call
+[00:31.32]There comes a time
+[00:36.57]When we hear a certain call
+`
+        const lyrics = new Lyrics(multilineExample)
+        expect(lyrics.remove('There comes a time').lines).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "When we hear a certain call",
+              "time": 28.57,
+            },
+            {
+              "text": "When we hear a certain call",
+              "time": 36.57,
+            },
+          ]
+        `)
+
+        const lyrics2 = new Lyrics(multilineExample)
+        expect(lyrics2.remove(/When/).lines).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "There comes a time",
+              "time": 25.32,
+            },
+            {
+              "text": "There comes a time",
+              "time": 31.32,
             },
           ]
         `)
@@ -365,6 +430,59 @@ describe('Lyrics operations', () => {
             {
               "text": "When we hear a certain call",
               "time": 28.57,
+            },
+          ]
+        `)
+    })
+
+    test('replace multiple lines', () => {
+        const multilineExample = `
+[00:25.32]There comes a time
+[00:28.57]When we hear a certain call
+[00:31.32]There comes a time
+[00:36.57]When we hear a certain call
+`
+        const lyrics = new Lyrics(multilineExample)
+        expect(lyrics.replace('There comes a time', 'There comes a time~').lines)
+            .toMatchInlineSnapshot(`
+              [
+                {
+                  "text": "There comes a time~",
+                  "time": 25.32,
+                },
+                {
+                  "text": "When we hear a certain call",
+                  "time": 28.57,
+                },
+                {
+                  "text": "There comes a time~",
+                  "time": 31.32,
+                },
+                {
+                  "text": "When we hear a certain call",
+                  "time": 36.57,
+                },
+              ]
+            `)
+
+        const lyrics2 = new Lyrics(multilineExample)
+        expect(lyrics2.replace(/(^When)/, 'All: $1').lines).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "There comes a time",
+              "time": 25.32,
+            },
+            {
+              "text": "All: When we hear a certain call",
+              "time": 28.57,
+            },
+            {
+              "text": "There comes a time",
+              "time": 31.32,
+            },
+            {
+              "text": "All: When we hear a certain call",
+              "time": 36.57,
             },
           ]
         `)
