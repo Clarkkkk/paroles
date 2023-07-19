@@ -43,7 +43,10 @@ export class LyricsPlayer {
             const callback = () => {
                 const index = this.getCurrentIndex()
                 const currentLine = this.lyrics.lines.at(index)
-                handler(currentLine?.text || '', index)
+                handler(
+                    currentLine?.text || '',
+                    index === -1 ? this.lyrics.lines.length - 1 : index
+                )
             }
             this._subscriptions.linechange.push(callback)
         } else if (e === 'lyricschange') {
