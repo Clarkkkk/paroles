@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+# 2.2.1    (2023-07-19)
+
+
+## **Bug Fixes**
+
+* `LyricsPlayer.off` not unsubscribing properly ([9b47e091](https://github.com/Clarkkkk/paroles/commit/9b47e091a5bb248d286ed4277bd93555dd395ced))
+* provide correct index in `linechange` event when the last line comes ([3bef79c4](https://github.com/Clarkkkk/paroles/commit/3bef79c4eea196d8341f2066c8a0f800f6303c78))
+* inconsistency in parsing and stringifying due to JavaScript decimal limitations ([ab0d8075](https://github.com/Clarkkkk/paroles/commit/ab0d8075fe90a500418a3ce2fcfccf77854df742))
+* error in stringifying lyric lines with same text ([d0d1097c](https://github.com/Clarkkkk/paroles/commit/d0d1097cc18904f90cdce6470ae45aaaa289eb6a))
+
+## **Chores**
+
+* fix typo ([158d8530](https://github.com/Clarkkkk/paroles/commit/158d85302d991cbe493013e3f6cc7da578f332b1))
+
+
+
 # 2.2.0    (2023-07-19)
 
 
