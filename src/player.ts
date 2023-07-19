@@ -9,13 +9,13 @@ type LyricsPlayerEventPair =
 export class LyricsPlayer {
     public lyrics: Lyrics
     public currentTime: number
-    private _subscribtions: Record<LyricsPlayerEvent, Array<() => void>>
+    private _subscriptions: Record<LyricsPlayerEvent, Array<() => void>>
     private _currentLine: string | undefined
 
     constructor(lyrics: Lyrics) {
         this.lyrics = lyrics
         this.currentTime = 0
-        this._subscribtions = {
+        this._subscriptions = {
             linechange: [],
             lyricschange: []
         }
@@ -26,7 +26,7 @@ export class LyricsPlayer {
 
         if (this._currentLine !== this.getCurrentLine()) {
             this._currentLine = this.getCurrentLine()
-            this._subscribtions.linechange.forEach((cb) => cb())
+            this._subscriptions.linechange.forEach((cb) => cb())
         }
     }
 
@@ -45,10 +45,10 @@ export class LyricsPlayer {
                 const currentLine = this.lyrics.lines.at(index)
                 handler(currentLine?.text || '', index)
             }
-            this._subscribtions.linechange.push(callback)
+            this._subscriptions.linechange.push(callback)
         } else if (e === 'lyricschange') {
             const callback = () => handler()
-            this._subscribtions.lyricschange.push(callback)
+            this._subscriptions.lyricschange.push(callback)
         }
     }
 
@@ -56,17 +56,17 @@ export class LyricsPlayer {
     off<T extends LyricsPlayerEventPair = LyricsPlayerEventPair>(e?: T[0], handler?: T[1]): void
     off<T extends LyricsPlayerEventPair = LyricsPlayerEventPair>(e?: T[0], handler?: T[1]) {
         if (!e) {
-            this._subscribtions = {
+            this._subscriptions = {
                 linechange: [],
                 lyricschange: []
             }
             return
         }
-        const index = this._subscribtions[e].findIndex((item) => item === handler)
+        const index = this._subscriptions[e].findIndex((item) => item === handler)
         if (index > -1) {
-            this._subscribtions.linechange.splice(index, 1)
+            this._subscriptions.linechange.splice(index, 1)
         } else if (!handler) {
-            this._subscribtions.linechange = []
+            this._subscriptions.linechange = []
         } else {
             console.error('LyricsPlayer.off(): handler not correct.')
         }
@@ -77,7 +77,7 @@ export class LyricsPlayer {
         this._currentLine = undefined
         if (lyrics) {
             this.lyrics = lyrics
-            this._subscribtions.lyricschange.forEach((cb) => cb())
+            this._subscriptions.lyricschange.forEach((cb) => cb())
         }
     }
 }
