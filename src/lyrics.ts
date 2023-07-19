@@ -273,11 +273,14 @@ export class Lyrics {
                 const text = line.replace(timeListReg, '').trim()
                 const matches = Array.from(line.matchAll(timeListReg))
                 matches.forEach((match) => {
+                    // a bit verbose to avoid queer behavious in JavaScript like 60 + 35.76 === 95.75999999999999
                     const min = +match[1]
-                    const sec = +(match[2] + '.' + match[3])
-                    const time = min * 60 + sec
+                    const sec = +match[2]
+                    const decimalStr = (match[3] ? Number(`0.${match[3]}`) : 0).toFixed(2)
+                    const integer = (min * 60 + sec).toString()
+                    const decimal = decimalStr.slice(1)
                     lyricLines.push({
-                        time,
+                        time: Number(integer + decimal),
                         text
                     })
                 })

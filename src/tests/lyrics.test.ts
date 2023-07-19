@@ -127,6 +127,19 @@ describe('Lyrics', () => {
         `)
     })
 
+    test('clone three digits decimals', () => {
+        const lyrics = new Lyrics(
+            '[00:25.322]There comes a time\n[01:35.759]When we hear a certain call'
+        )
+        const cloned = lyrics.clone()
+        const line1 = lyrics.lines[0]
+        const line2 = lyrics.lines[1]
+        const clonedLine1 = cloned.lines[0]
+        const clonedLine2 = cloned.lines[1]
+        expect(line1.time).toBe(clonedLine1.time)
+        expect(line2.time).toBe(clonedLine2.time)
+    })
+
     test('clone with duplicate lines', () => {
         const lyrics = new Lyrics('[01:25.92]so, why\n[01:27.18]\n[01:28.59]so, why\n')
 
