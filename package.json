@@ -1,7 +1,7 @@
 {
   "name": "paroles",
   "description": "A library for parsing, making, modifying and playing LRC format lyrics",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "license": "MIT",
   "author": "Aaron Zhou",
   "packageManager": "pnpm@8.6.3",

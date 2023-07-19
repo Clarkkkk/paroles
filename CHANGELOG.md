@@ -2,6 +2,32 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+# 2.2.0    (2023-07-19)
+
+
+## **Features**
+
+* enhance `insert`, `remove` and `replace` in `Lyrics` ([dc821373](https://github.com/Clarkkkk/paroles/commit/dc82137335c7e3a22867efd08143274f2c65e350))
+    
+    ### **Description**
+    
+    - `insert` can receive an array to add several lines at one time now.
+    - `remove` can receive a RegExp to match lyrics lines.
+    - `remove` will remove all the lines matched the provided string/RegExp now.
+    - You can use a RegExp as the first parameter of `replace`. If a RegExp object is provided, it uses `String.prototype.replace` under the hood. For example, `replace(/(abc)xxx/, '$1')` will replace the string with the first capturing group.
+    
+
+## **Documentation**
+
+* update README ([92a24a12](https://github.com/Clarkkkk/paroles/commit/92a24a12ec00a9fae67b4a45d889be1125dc16e1))
+* use aaron-preset to regenerate the CHANGELOG.md ([a2ed9fc5](https://github.com/Clarkkkk/paroles/commit/a2ed9fc504e459188a3a7612e2f6a7b1bdc64305))
+
+## **Chores**
+
+* modify package.json and fix errors ([21e74e66](https://github.com/Clarkkkk/paroles/commit/21e74e66a64b1d21d267d04cf8dac8157f185557))
+
+
+
 # 2.1.0    (2023-07-18)
 
 
@@ -115,6 +141,3 @@ All notable changes to this project will be documented in this file. See [commit
 * github actions ([8ef97eef](https://github.com/Clarkkkk/paroles/commit/8ef97eef1323aa2d873875452adf165272afc767))
 * update eslint config ([abe9f54b](https://github.com/Clarkkkk/paroles/commit/abe9f54b47ebe5651fb4fc2801d8171b1fce7af8))
 * remove template files ([791508f9](https://github.com/Clarkkkk/paroles/commit/791508f902488124494c9fa3bf1c9b12a3aaa31d))
-
-
-
