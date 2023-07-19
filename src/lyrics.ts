@@ -252,7 +252,7 @@ export class Lyrics {
             .sort((a, b) => a.time[0] - b.time[0])
             .map((item) => {
                 const timeText = item.time.map((t) => `[${formatTime(t)}]`)
-                return `${timeText}${item.text}`
+                return `${timeText.join('')}${item.text}`
             })
 
         textArr.push(...lyricsArr)

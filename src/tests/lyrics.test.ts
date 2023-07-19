@@ -127,6 +127,27 @@ describe('Lyrics', () => {
         `)
     })
 
+    test('clone with duplicate lines', () => {
+        const lyrics = new Lyrics('[01:25.92]so, why\n[01:27.18]\n[01:28.59]so, why\n')
+
+        expect(lyrics.clone().lines).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "so, why",
+              "time": 85.92,
+            },
+            {
+              "text": "",
+              "time": 87.18,
+            },
+            {
+              "text": "so, why",
+              "time": 88.59,
+            },
+          ]
+        `)
+    })
+
     test('toString', () => {
         expect(lyrics.toString()).toMatchInlineSnapshot(`
           "[ar:USA for africa]
