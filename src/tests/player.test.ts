@@ -15,7 +15,7 @@ const example = `
 describe('Lyrics', () => {
     const lyrics = new Lyrics(example)
 
-    test('update and event', () => {
+    test('update and linechange', () => {
         const player = new LyricsPlayer(lyrics)
         const callback = vi.fn((line, index) => {
             return { line, index }
@@ -40,5 +40,18 @@ describe('Lyrics', () => {
         player.off('linechange', callback)
         player.updateTime(30)
         expect(callback).toHaveBeenCalledTimes(4)
+    })
+
+    test('rewind and lyricschange', () => {
+        const player = new LyricsPlayer(lyrics)
+        const callback = vi.fn(() => {})
+        player.on('lyricschange', callback)
+
+        player.updateTime(26)
+        expect(player.currentTime).toBe(26)
+
+        player.rewind(new Lyrics(''))
+        expect(player.currentTime).toBe(0)
+        expect(callback).toHaveBeenCalledTimes(1)
     })
 })
