@@ -1,6 +1,6 @@
 {
   "name": "paroles",
-  "description": "Easy to use lyrics parser and runner",
+  "description": "A library for parsing, making, modifying and playing LRC format lyrics",
   "version": "2.1.0",
   "license": "MIT",
   "author": "Aaron Zhou",
@@ -10,7 +10,9 @@
     "lyrics player",
     "lrc",
     "lrc parser",
-    "lyrics parser"
+    "lrc maker",
+    "lyrics parser",
+    "lyrics maker"
   ],
   "homepage": "https://github.com/Clarkkkk/paroles#readme",
   "repository": {
@@ -21,7 +23,7 @@
     "url": "https://github.com/Clarkkkk/paroles/issues"
   },
   "main": "./dist/paroles.cjs",
-  "module": "./dist/paroles.mjs",
+  "module": "./dist/paroles.js",
   "types": "./dist/index.d.ts",
   "type": "module",
   "files": [
@@ -32,7 +34,7 @@
     ".": {
       "types": "./dist/index.d.ts",
       "require": "./dist/paroles.cjs",
-      "import": "./dist/paroles.mjs"
+      "import": "./dist/paroles.js"
     }
   },
   "scripts": {
