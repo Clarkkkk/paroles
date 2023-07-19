@@ -30,6 +30,8 @@ yarn add paroles
 ### Parse lyrics
 
 ```js
+import { Lyrics } from 'paroles'
+
 const text = `
   [ti:We are the world]
   [ar:USA for africa]
@@ -44,7 +46,10 @@ console.log(lyrics.atTime(26)) // There comes a time
 ```
 
 ### Make lyrics
+
 ```js
+import { Lyrics } from 'paroles'
+
 const lyrics = new Lyrics()
 lyrics.insert({ time: 25.32, text: 'There comes a time' })
 const piece = new Lyrics(`
@@ -52,15 +57,26 @@ const piece = new Lyrics(`
 [00:31.82]When the world must come together as onee
 [00:38.82]advertisement
 `)
-lyrics.merge(piece)
-lyrics.remove('advertisement')
-lyrics.replace('When the world must come together as onee', 'When the world must come together as one')
-lyrics.setInfo({
-    artist: 'USA for africa',
-    length: '07:00.19',
-    title: 'We are the world',
-    version: 'v1.0.0',
-})
+const french = new Lyrics(`
+[00:25.32]Il arrive un moment où nous avons besoin d'un certain appel
+[00:31.82]Quand le monde doit être uni
+`)
+/** It is able to chain the operation methods (i.e. insert, merge, remove, replace, setInfo) */
+lyrics
+    .merge(piece)
+    .merge(french, {
+        resolveConflict: (original, affiliate) => {
+            return `${original}\n${affiliate}`
+        }
+    })
+    .remove('advertisement')
+    .replace('When the world must come together as onee', 'When the world must come together as one')
+    .setInfo({
+        artist: 'USA for africa',
+        length: '07:00.19',
+        title: 'We are the world',
+        version: 'v1.0.0',
+    })
 console.log(lyrics.toString())
 // [ar:USA for africa]
 // [ti:We are the world]
@@ -74,6 +90,8 @@ console.log(lyrics.toString())
 ### Play lyrics
 
 ```js
+import { LyricsPlayer } from 'paroles'
+
 const lyricsPlayer = new LyricsPlayer(lyrics)
 // subscribe linechange event
 lyricsPlayer.on('linechange', (line) => {
@@ -116,34 +134,38 @@ audio.addEventListener('timeupdate', (e) => {
     }
     ```
 
-- `lines`: an array consists of every single lyrics line
-- `eol`: end of line symbol detected when initialized
-- `clone()`: clone and return a new `Lyrics` object
-- `toString()`: return the raw text of the `Lyrics` object
-- `at(index: number)`: return the lyrics line at the index
-- `atTime(time: number)`: return the lyrics line based on the time (in seconds)
-- `setOffset(time: number)`: set time offset (in seconds). A positive value let lyrics appear sooner, a negative value delays the lyrics
-- `setInfo(info: LyricsInfo)`: set `LyricsInfo`. New properties will override the original ones
+- `lines`: an array consists of every single lyrics line.
+- `eol`: end of line symbol detected when initialized.
+- `clone()`: clone and return a new `Lyrics` object.
+- `toString()`: return the raw text of the `Lyrics` object.
+- `at(index: number)`: return the lyrics line at the index. Similar to `Array.prototype.at()`, when given negative index, it returns the last nth line.
+- `atTime(time: number)`: return the lyrics line based on the time (in seconds). If the provided time is smaller/bigger than the times of all lyrics, the first/last line will be returned.
+- `setOffset(time: number)`: set time offset (in seconds). A positive value let lyrics appear sooner, a negative value delays the lyrics.
+- `setInfo(info: LyricsInfo)`: set `LyricsInfo`. New properties will override the original ones.
 - `merge(lyrics: string | Lyrics, option?)`: merge another lyrics. The original lyrics is prior by default if there are conflicts.
     - `option.override`: if `true`, lyrics to merge is prior to, and will overwrite the original one for `LyricsInfo` and lines with the same time.
     - `option.resolveInfo(originalInfo, affiliateInfo)`: manually control how to merge `LyricsInfo`, should return a `LyricsInfo` object. `option.override` for `LyricsInfo` is neglected when use this option.
     - `resolveConflict(originalLine, affiliateLine)`: manually control how to merge two lines with the same time. `option.override` for lyrics lines is neglected when use this option.
-- `insert(line: LyricsLine)`: insert a new line. If there is a line with the same time, the inserted line will replace the original one.
-- `remove(line: LyricsLine | string)`: remove a line. If no such line, it fails in silent.
-- `replace(oldLine: LyricsLine | string, newLine: LyricsLine | string)`: replace a line. If no such line, it fails in silent.
+- `insert(line: LyricsLine | LyricsLine[])`: insert a new line or several lines. If there is a line with the same time, the inserted line will replace the original one.
+- `remove(line: LyricsLine | string | RegExp)`: remove a line or lines (if multiple lines match). If no such line, it fails in silent.
+- `replace(oldLine: LyricsLine | string | RegExp, newLine: LyricsLine | string)`: replace a line or lines (if multiple lines match). If a RegExp object is provided, it uses `String.prototype.replace` under the hood. For example, `replace(/(abc)xxx/, '$1')` will replace the string with the first capturing group.
 
 ### `LyricsPlayer`
 
 - `currentTime`: current play time (in seconds).
-- `lyrics`: the Lyrics object
-- `updateTime(time: number)`: update the current play time (in seconds), should be synchronized with the song play time
-- `getCurrentLine()`: get the current lyrics line based on the current play time
-- `getCurrentIndex()`: get the current lyrics line index based on the current play time
-- `rewind(lyrics?)`: reset `currentTime`. If lyrics is provided, `linechange` will be triggered with the new lyrics.
+- `lyrics`: the Lyrics object.
+- `updateTime(time: number)`: update the current play time (in seconds), should be synchronized with the song play time. If the current lyrics line changes after the update, `linechange` is triggered.
+- `getCurrentLine()`: get the current lyrics line based on the current play time. (use `Lyrics.atTime` under the hood)
+- `getCurrentIndex()`: get the current lyrics line index based on the current play time.
+- `rewind(lyrics?)`: reset `currentTime`. If `lyrics` is provided, `LyricsPlayer.lyrics` will be replaced and `lyricschange` will be triggered.
 - `on(event, callback)`: subscribe the event and the callback will be called when event triggers. 
-    - `linechange` event: triggered when current lyrics line changes. Current lyrics line and index is available in callback `callback(currentLine: text, index: number)`
+    - `linechange` event: triggered when current lyrics line changes. Current lyrics line and index is available in callback `callback(currentLine: text, index: number)`.
     - `lyricschange` event: triggered when `rewind(lyrics)` called and lyrics changes.
 - `off(event?, callback?)`: remove the event listener. If `callback` is omited, all listeners belong to that event will be removed. If `event` and `callback` are both omited, all of the event listeners will be removed.
+
+## Changelog
+
+See [CHANGELOG](https://github.com/Clarkkkk/paroles/blob/main/CHANGELOG.md)
 
 ## Migrate from v1
 
