@@ -2,6 +2,57 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+# 2.3.0    (2023-07-20)
+
+
+## **Features**
+
+* add option to handle lines with same time when initializing ([1640c3de](https://github.com/Clarkkkk/paroles/commit/1640c3ded685c2157f5c19a7c876ac6f8e069091))
+    
+    ### **Description**
+    
+    - `option.resolveConflict`: used to handle lines with exact same time. can be `merge`, `preserve`, `overwrite` or a custom function, defaults to `merge`. `merge` equals to `(line1, line2) => line1 + this.eol + line2`; `preserve` equals to `(line1, line2) => line1`; `overwrite` equals to `(line1, line2) => line2`
+    
+    For example:
+    ```js
+    const lyrics = `
+    [00:25.32]There comes a time
+    [00:25.32]When we hear a certain call
+    [00:31.82]When the world must come together as one
+    [00:31.82]There are people dying
+    [00:41.57]Oh it's time to lend a hand
+    [00:52.32]To life, the greatest gift of all
+    [00:52.32]We can't go on pretending day by day
+    `
+    const lyrics = new Lyrics(lyrics, { resolveConflict: 'merge' })
+    console.log(lyrics.lines)
+    // [
+    //     {
+    //         "text": "There comes a time\nWhen we hear a certain call",
+    //         "time": 25.32,
+    //     },
+    //     {
+    //         "text": "When the world must come together as one\nThere are people dying",
+    //         "time": 31.82,
+    //     },
+    //     {
+    //         "text": "Oh it's time to lend a hand",
+    //         "time": 41.57,
+    //     },
+    //     {
+    //         "text": "To life, the greatest gift of all\nWe can't go on pretending day by day",
+    //         "time": 52.32,
+    //     },
+    // ]
+    ```
+    
+
+## **Documentation**
+
+* update README ([0f207884](https://github.com/Clarkkkk/paroles/commit/0f2078842b82eaa16eadb73f6abad36798dc6102))
+
+
+
 # 2.2.1    (2023-07-19)
 
 
