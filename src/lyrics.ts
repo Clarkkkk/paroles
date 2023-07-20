@@ -37,16 +37,48 @@ interface LyricsMergeOption {
     resolveConflict?: (original: string, affiliate: string) => string
 }
 
+interface LyricsOption {
+    resolveConflict?:
+        | 'merge'
+        | 'preserve'
+        | 'overwrite'
+        | ((line1: string, line2: string) => string)
+}
+
+const defaultLyricsOption: LyricsOption = {
+    resolveConflict: 'merge'
+}
+
+interface LyricsParseOption {
+    eol: EndOfLine
+    resolveConflict?: LyricsOption['resolveConflict']
+}
+
+const defaultLyricsParseOption: LyricsParseOption = {
+    eol: LF,
+    resolveConflict: 'merge'
+}
+
 export class Lyrics {
     private _offset: number
+    private _option: LyricsOption
     public eol: EndOfLine
     public info: LyricsInfo
     public lines: LyricsLine[]
 
-    constructor(lyrics?: string | Lyrics) {
+    constructor(lyrics?: string | Lyrics)
+    constructor(lyrics: string | Lyrics, option?: LyricsOption)
+    constructor(lyrics?: string | Lyrics, option?: LyricsOption) {
+        this._option = {
+            ...defaultLyricsOption,
+            ...(option || {})
+        }
         if (typeof lyrics === 'string') {
             this.eol = detectEol(lyrics)
-            const obj = Lyrics.parse(lyrics, this.eol)
+            const obj = Lyrics.parse(lyrics, {
+                eol: this.eol,
+                resolveConflict: this._option.resolveConflict
+            })
             this.info = obj.info
             this.lines = obj.lines
             this._offset = obj.info.offset || 0
@@ -61,6 +93,7 @@ export class Lyrics {
             this.info = cloned.info
             this.lines = cloned.lines
             this._offset = cloned.info.offset || 0
+            this._option = cloned._option
         }
     }
 
@@ -260,9 +293,13 @@ export class Lyrics {
         return textArr.join(lyrics.eol)
     }
 
-    static parse(text: string, eol: EndOfLine = LF) {
+    static parse(text: string, option?: LyricsParseOption) {
+        const mergedOption = {
+            ...defaultLyricsParseOption,
+            ...(option || {})
+        }
         const lines = text
-            .split(eol)
+            .split(mergedOption.eol)
             .map((l) => l.trim())
             .filter((l) => validLineReg.test(l))
 
@@ -300,14 +337,26 @@ export class Lyrics {
         }
 
         lyricLines.sort(function (a, b) {
-            if (a.time === b.time) {
-                throw new Error(
-                    `Found two lines with the same time: "${a.text}" and "${
-                        b.text
-                    }" at ${formatTime(a.time)}`
-                )
-            }
+            // if (a.time === b.time) {
+            //     console.error(
+            //         `Found two lines with the same time: "${a.text}" and "${
+            //             b.text
+            //         }" at ${formatTime(a.time)}`
+            //     )
+            // }
             return a.time - b.time
+        })
+
+        lyricLines.forEach((item, index, arr) => {
+            if (!arr[index + 1] || item.time !== arr[index + 1].time) return
+            if (mergedOption.resolveConflict === 'merge') {
+                arr[index].text = `${arr[index].text}${mergedOption.eol}${arr[index + 1].text}`
+            } else if (mergedOption.resolveConflict === 'overwrite') {
+                arr[index].text = arr[index + 1].text
+            } else if (typeof mergedOption.resolveConflict === 'function') {
+                arr[index].text = mergedOption.resolveConflict(arr[index].text, arr[index + 1].text)
+            }
+            arr.splice(index + 1, 1)
         })
 
         return {

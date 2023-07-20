@@ -41,12 +41,105 @@ describe('Lyrics', () => {
     })
 
     test('time conflict error', () => {
-        const wrongLyrics = `
+        const lyrics = `
 [00:25.32]There comes a time
 [00:25.32]When we hear a certain call
 [00:31.82]When the world must come together as one
+[00:31.82]There are people dying
+[00:41.57]Oh it's time to lend a hand
+[00:52.32]To life, the greatest gift of all
+[00:52.32]We can't go on pretending day by day
 `
-        expect(() => new Lyrics(wrongLyrics)).toThrowError('Found two lines with the same time')
+        const lyrics1 = new Lyrics(lyrics, { resolveConflict: 'merge' })
+        expect(lyrics1.lines).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "There comes a time
+          When we hear a certain call",
+              "time": 25.32,
+            },
+            {
+              "text": "When the world must come together as one
+          There are people dying",
+              "time": 31.82,
+            },
+            {
+              "text": "Oh it's time to lend a hand",
+              "time": 41.57,
+            },
+            {
+              "text": "To life, the greatest gift of all
+          We can't go on pretending day by day",
+              "time": 52.32,
+            },
+          ]
+        `)
+
+        const lyrics2 = new Lyrics(lyrics, { resolveConflict: 'preserve' })
+        expect(lyrics2.lines).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "There comes a time",
+              "time": 25.32,
+            },
+            {
+              "text": "When the world must come together as one",
+              "time": 31.82,
+            },
+            {
+              "text": "Oh it's time to lend a hand",
+              "time": 41.57,
+            },
+            {
+              "text": "To life, the greatest gift of all",
+              "time": 52.32,
+            },
+          ]
+        `)
+
+        const lyrics3 = new Lyrics(lyrics, { resolveConflict: 'overwrite' })
+        expect(lyrics3.lines).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "When we hear a certain call",
+              "time": 25.32,
+            },
+            {
+              "text": "There are people dying",
+              "time": 31.82,
+            },
+            {
+              "text": "Oh it's time to lend a hand",
+              "time": 41.57,
+            },
+            {
+              "text": "We can't go on pretending day by day",
+              "time": 52.32,
+            },
+          ]
+        `)
+
+        const lyrics4 = new Lyrics(lyrics, { resolveConflict: (a, b) => `${a} - ${b}` })
+        expect(lyrics4.lines).toMatchInlineSnapshot(`
+          [
+            {
+              "text": "There comes a time - When we hear a certain call",
+              "time": 25.32,
+            },
+            {
+              "text": "When the world must come together as one - There are people dying",
+              "time": 31.82,
+            },
+            {
+              "text": "Oh it's time to lend a hand",
+              "time": 41.57,
+            },
+            {
+              "text": "To life, the greatest gift of all - We can't go on pretending day by day",
+              "time": 52.32,
+            },
+          ]
+        `)
     })
 
     test('at', () => {
