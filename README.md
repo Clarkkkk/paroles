@@ -109,6 +109,19 @@ audio.addEventListener('timeupdate', (e) => {
 
 ### `Lyrics`
 
+- `new Lyrics(lyrics?: string | Lyrics, option?: LyricsOption)`: creates a `Lyrics` object
+    - `option.resolveConflict`: used to handle lines with exact same time. can be `merge`, `preserve`, `overwrite` or a custom function, defaults to `merge`. `merge` equals to `(line1, line2) => line1 + this.eol + line2`; `preserve` equals to `(line1, line2) => line1`; `overwrite` equals to `(line1, line2) => line2`
+
+    ```ts
+        interface LyricsOption {
+            resolveConflict?:
+                | 'merge'
+                | 'preserve'
+                | 'overwrite'
+                | ((line1: string, line2: string) => string)
+        }
+    ```
+
 - `info`: information contained in lrc text. The abbreviation is replaced with the full word for better readability. Note that `offset`, which is in milliseconds in LRC format, is converted to seconds in `LyricsInfo` for consistency.
 
     ```ts
